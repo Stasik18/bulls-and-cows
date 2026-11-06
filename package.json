@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.4",
     "@types/jest": "^30.0.0",
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
@@ -30,6 +31,7 @@
     "jest-environment-jsdom": "^30.5.2",
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.4",
     "ts-jest": "^29.4.15",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.1",
