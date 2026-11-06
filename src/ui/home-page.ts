@@ -1,6 +1,6 @@
 export function HomePage() {
   const form = document.createElement('form');
-  form.className = 'flex flex-col gap-6 max-w-4xl mx-auto p-8';
+  form.className = 'flex flex-col gap-6 max-w-4xl mx-auto p-8 ';
 
   const titleHomePage = document.createElement('h1');
   const leaderBoardButton = document.createElement('button');
@@ -8,7 +8,7 @@ export function HomePage() {
   const descriptionHomePage = document.createElement('div');
 
   titleHomePage.textContent = 'Bulls and Cows';
-  titleHomePage.className = 'text-4xl font-bold text-blue-500';
+  titleHomePage.className = 'text-4xl font-bold text-blue-500 text-center';
 
   descriptionHomePage.textContent =
     'Bulls and Cows — игра в угадывание секретного числа из уникальных цифр. Компьютер загадывает число заданной длины в заданной системе счисления, игрок вводит варианты, после каждой попытки получает подсказку: сколько цифр угаданы и стоят на своём месте (bulls), и сколько угаданы, но стоят не на своём месте (cows).';
