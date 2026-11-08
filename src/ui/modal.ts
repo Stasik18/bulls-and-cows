@@ -1,26 +1,66 @@
-export function modal() {
-  const modal = document.createElement('form');
-  modal.className = 'flex flex-col gap-6 max-w-4xl mx-auto p-8 bg-gray-100';
+import { el } from '../helpers/fabric-elemnt';
 
-  const overlay = document.createElement('div');
-  overlay.className =
-    'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 background-blur-sm';
+export function modal(onClose: () => void) {
+  let isClosed = false;
 
-  const titleModaL = document.createElement('h1');
-  const closeButton = document.createElement('button');
-  const leaderList = document.createElement('ul');
+  const close = () => {
+    if (isClosed) return;
 
-  titleModaL.textContent = 'Leader Board';
-  titleModaL.className = 'text-4xl font-bold text-blue-500 text-center';
+    isClosed = true;
+    window.removeEventListener('keydown', handleKeyDown);
+    onClose();
+  };
 
-  leaderList.className = 'min-h-80 flex-1';
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      close();
+    }
+  };
 
-  closeButton.textContent = 'Close';
-  closeButton.type = 'button';
-  closeButton.className = 'rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600';
+  const title = el(
+    'h1',
+    { className: 'text-4xl font-bold text-blue-500 text-center' },
+    'Leaderboard',
+  );
 
-  modal.append(titleModaL, leaderList, closeButton);
-  overlay.append(modal);
+  const leaderList = el('ul', {
+    className: 'min-h-80 flex-1',
+  });
+
+  const closeButton = el(
+    'button',
+    {
+      type: 'button',
+      className: 'rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600',
+      onClick: close,
+    },
+    'Close',
+  );
+
+  const content = el(
+    'div',
+    {
+      className: 'flex flex-col gap-6 max-w-4xl mx-auto p-8 bg-gray-100 rounded-lg w-full',
+      onClick: (event: MouseEvent) => event.stopPropagation(),
+    },
+    title,
+    leaderList,
+    closeButton,
+  );
+
+  const overlay = el(
+    'div',
+    {
+      className:
+        'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm',
+      onClick: (event: MouseEvent) => {
+        if (event.target === overlay) close();
+      },
+    },
+    content,
+  );
+
+  window.addEventListener('keydown', handleKeyDown);
 
   return overlay;
 }
