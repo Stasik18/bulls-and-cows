@@ -1,4 +1,4 @@
-import { createDigitValidator } from './createDigitValidator';
+import { createDigitValidator } from '@/game/createDigitValidator';
 
 export function isValidGuess(guess: string, length: number, base: 2 | 8 | 10 | 16): boolean {
   if (guess.length !== length) return false;

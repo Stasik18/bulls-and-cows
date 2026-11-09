@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createDigitValidator } from '../game/createDigitValidator';
+import { createDigitValidator } from '@/game/createDigitValidator';
 
 describe('createDigitValidator', () => {
   it('returns a predicate function', () => {

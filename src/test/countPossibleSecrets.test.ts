@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { countPossibleSecrets } from '../game/countPossibleSecrets';
+import { countPossibleSecrets } from '@/game/countPossibleSecrets';
 
 describe('countPossibleSecrets', () => {
   it('counts possible decimal secrets', () => {

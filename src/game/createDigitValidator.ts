@@ -1,4 +1,4 @@
-import { SYSTEMS } from '../constants/systems';
+import { SYSTEMS } from '@/constants/systems';
 
 export function createDigitValidator(base: 2 | 8 | 10 | 16): (char: string) => boolean {
   return function (char: string) {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateGuess } from '../game/evaluateGuess';
+import { evaluateGuess } from '@/game/evaluateGuess';
 
 describe('evaluateGuess', () => {
   it('returns all bulls when the guess matches the secret', () => {

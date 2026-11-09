@@ -1,8 +1,8 @@
-import { SYSTEMS } from '../constants/systems';
-import { countPossibleSecrets } from '../game/countPossibleSecrets';
-import { generateSecret } from '../game/generateSecret';
-import { el } from '../helpers/fabric-elemnt';
-import { getGameState, setGameState } from '../storage/gameState';
+import { SYSTEMS } from '@/constants/systems';
+import { countPossibleSecrets } from '@/game/countPossibleSecrets';
+import { generateSecret } from '@/game/generateSecret';
+import { el } from '@/helpers/fabric-elemnt';
+import { getGameState, setGameState } from '@/storage/gameState';
 
 export function HomePage() {
   const { base, length } = getGameState();

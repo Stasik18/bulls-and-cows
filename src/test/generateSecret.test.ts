@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { generateSecret } from '../game/generateSecret';
-import { SYSTEMS } from '../constants/systems';
+import { generateSecret } from '@/game/generateSecret';
+import { SYSTEMS } from '@/constants/systems';
 
 describe('generate', () => {
   it('generateSecret is function', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isValidGuess } from '../game/isValidGuess';
+import { isValidGuess } from '@/game/isValidGuess';
 
 describe('isValidGuess', () => {
   it('returns true when the guess has valid length and unique digits', () => {

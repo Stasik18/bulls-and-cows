@@ -2,10 +2,11 @@ import './style.css';
 
 import { HomePage } from './ui/home-page';
 import { GamePage } from './ui/game-page';
-import { leaderModal } from './ui/leader-modal';
-import { winModal } from './ui/win-modal';
+
 import { el } from './helpers/fabric-elemnt';
 import { getGameState, setGameState, subscribeGameState } from './storage/gameState';
+import { leaderModal } from './components/modals/leader-modal';
+import { winModal } from './components/modals/win-modal';
 
 const main = el('main', {
   className: 'min-h-screen w-full flex items-center justify-center p-4',

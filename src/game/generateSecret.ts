@@ -1,4 +1,4 @@
-import { SYSTEMS } from '../constants/systems';
+import { SYSTEMS } from '@/constants/systems';
 
 export function generateSecret(
   length: number,
