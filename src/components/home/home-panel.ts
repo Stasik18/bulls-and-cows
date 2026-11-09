@@ -12,6 +12,72 @@ interface HomePanelProps {
   onOpenLeaderboard: () => void;
 }
 
+function createLengthOptions(
+  digits: string,
+  selectedLength: number,
+  onChangeLength: (length: number) => void,
+): HTMLElement[] {
+  const availableLengths = digits.split(' ').length <= 2 ? [2] : [2, 3, 4, 5, 6];
+
+  return availableLengths.map((digit) => {
+    const radio = el('input', {
+      type: 'radio',
+      name: 'symbolElement',
+      value: String(digit),
+      checked: digit === selectedLength,
+      className: 'sr-only peer',
+      onChange: () => onChangeLength(digit),
+    });
+
+    const symbolText = el(
+      'span',
+      {
+        className:
+          'flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 font-bold text-slate-600 transition peer-checked:border-teal-700 peer-checked:bg-teal-700 peer-checked:text-white',
+      },
+      digit,
+    );
+
+    return el('label', { className: 'cursor-pointer' }, radio, symbolText);
+  });
+}
+
+function createDigitElements(digits: string): HTMLElement[] {
+  return digits.split(' ').map((digit) =>
+    el(
+      'span',
+      {
+        className:
+          'flex h-10 w-10 items-center justify-center rounded-xl border border-teal-100 bg-teal-50 font-bold text-teal-800',
+      },
+      digit,
+    ),
+  );
+}
+
+function createSystemOptions(base: Base, onChangeSystem: (base: Base) => void): HTMLElement[] {
+  return SYSTEMS.map((system) => {
+    const radio = el('input', {
+      type: 'radio',
+      name: 'numberSystem',
+      value: system.value,
+      checked: system.value === base,
+      className: 'accent-teal-700',
+      onChange: () => onChangeSystem(system.value),
+    });
+
+    return el(
+      'label',
+      {
+        className:
+          'flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-teal-500 has-[:checked]:border-teal-600 has-[:checked]:bg-teal-50 has-[:checked]:text-teal-800',
+      },
+      radio,
+      system.label,
+    );
+  });
+}
+
 export function HomePanel({
   base,
   length,
@@ -66,13 +132,17 @@ export function HomePanel({
     'Choose your number system and secret number length.',
   );
 
-  const systemsContainer = el('div', {
-    className: 'flex flex-wrap gap-3',
-  });
+  const systemsContainer = el(
+    'div',
+    { className: 'flex flex-wrap gap-3' },
+    ...createSystemOptions(base, onChangeSystem),
+  );
 
-  const currentSymbolList = el('div', {
-    className: 'flex flex-wrap gap-3',
-  });
+  const currentSymbolList = el(
+    'div',
+    { className: 'flex flex-wrap gap-3' },
+    ...createLengthOptions(selectedSystem.digits, length, onChangeLength),
+  );
 
   const currentSymbol = el(
     'div',
@@ -85,9 +155,11 @@ export function HomePanel({
     currentSymbolList,
   );
 
-  const digitsList = el('div', {
-    className: 'flex flex-wrap gap-2',
-  });
+  const digitsList = el(
+    'div',
+    { className: 'flex flex-wrap gap-2' },
+    ...createDigitElements(selectedSystem.digits),
+  );
 
   const digitsDisplay = el(
     'div',
@@ -119,76 +191,6 @@ export function HomePanel({
     ),
   );
 
-  function renderCurrentSymbol(digits: string, selectedLength: number) {
-    const availableLengths = digits.split(' ').length <= 2 ? [2] : [2, 3, 4, 5, 6];
-
-    const lengthElements = availableLengths.map((digit) => {
-      const radio = el('input', {
-        type: 'radio',
-        name: 'symbolElement',
-        value: String(digit),
-        checked: digit === selectedLength,
-        className: 'sr-only peer',
-        onChange: () => {
-          onChangeLength(digit);
-        },
-      });
-
-      const symbolText = el(
-        'span',
-        {
-          className:
-            'flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 font-bold text-slate-600 transition peer-checked:border-teal-700 peer-checked:bg-teal-700 peer-checked:text-white',
-        },
-        digit,
-      );
-
-      return el('label', { className: 'cursor-pointer' }, radio, symbolText);
-    });
-
-    currentSymbolList.replaceChildren(...lengthElements);
-  }
-
-  function renderDigits(digits: string) {
-    const digitElements = digits.split(' ').map((digit) =>
-      el(
-        'span',
-        {
-          className:
-            'flex h-10 w-10 items-center justify-center rounded-xl border border-teal-100 bg-teal-50 font-bold text-teal-800',
-        },
-        digit,
-      ),
-    );
-
-    digitsList.replaceChildren(...digitElements);
-  }
-
-  const systemElements = SYSTEMS.map((system) => {
-    const radio = el('input', {
-      type: 'radio',
-      name: 'numberSystem',
-      value: system.value,
-      checked: system.value === base,
-      className: 'accent-teal-700',
-      onChange: () => {
-        onChangeSystem(system.value);
-      },
-    });
-
-    return el(
-      'label',
-      {
-        className:
-          'flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-teal-500 has-[:checked]:border-teal-600 has-[:checked]:bg-teal-50 has-[:checked]:text-teal-800',
-      },
-      radio,
-      system.label,
-    );
-  });
-
-  systemsContainer.append(...systemElements);
-
   const systemSection = el(
     'div',
     { className: 'flex flex-col gap-3' },
@@ -215,9 +217,6 @@ export function HomePanel({
     ),
     countVariantsDisplay,
   );
-
-  renderDigits(selectedSystem.digits);
-  renderCurrentSymbol(selectedSystem.digits, length);
 
   const startGameButton = el(
     'button',
@@ -249,7 +248,7 @@ export function HomePanel({
   );
 
   return el(
-    'form',
+    'div',
     {
       className:
         'flex w-full max-w-4xl flex-col gap-7 rounded-3xl border border-white/70 bg-slate-50 p-6 shadow-2xl sm:p-10',

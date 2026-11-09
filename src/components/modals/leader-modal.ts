@@ -1,14 +1,7 @@
 import { el } from '@/helpers/fabric-elemnt';
 import { SYSTEMS } from '@/constants/systems';
 import { LEADERBOARD_KEY, type LeaderboardEntry } from '@/storage/gameState';
-import { countPossibleSecrets } from '@/game/countPossibleSecrets';
-
-function calculateScore(entry: LeaderboardEntry): number {
-  const combinations = countPossibleSecrets(entry.length, entry.base);
-  const timeMinutes = entry.durationMs / 60_000;
-
-  return (100 * Math.log2(combinations)) / (entry.attempts * (1 + timeMinutes / 5));
-}
+import { calculateScore } from '@/helpers/calculate-store';
 
 export function leaderModal(onClose: () => void) {
   let isClosed = false;
@@ -40,6 +33,7 @@ export function leaderModal(onClose: () => void) {
     'h1',
     {
       className: 'text-3xl font-extrabold tracking-tight text-slate-800 text-center sm:text-4xl',
+      id: 'leaderboard-title',
     },
     'Leaderboard',
   );
@@ -86,7 +80,7 @@ export function leaderModal(onClose: () => void) {
         {},
         el(
           'td',
-          { colSpan: 5, className: 'p-10 text-center text-slate-400' },
+          { colSpan: 6, className: 'p-10 text-center text-slate-400' },
           'No results yet. Complete your first game!',
         ),
       ),

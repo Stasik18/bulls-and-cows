@@ -8,7 +8,8 @@ The project is currently under development.
 
 - **TypeScript** - application development
 - **Vite** - development server and build tool
-- **Jest** - testing framework
+- **Vitest** - testing framework
+- **Tailwind CSS** - utility-first styling
 - **ESLint** - code linting
 - **Prettier** - code formatting
 - **Husky** - Git hooks
@@ -48,7 +49,8 @@ Vite will display the local development URL in the terminal.
 | `npm run dev`          | Starts the development server                         |
 | `npm run build`        | Runs TypeScript checks and creates a production build |
 | `npm run preview`      | Previews the production build locally                 |
-| `npm test`             | Runs the Jest test suite                              |
+| `npm test`             | Runs the Vitest test suite once                       |
+| `npm run test:watch`   | Runs Vitest in watch mode                             |
 | `npm run lint`         | Checks the code with ESLint                           |
 | `npm run format`       | Formats project files with Prettier                   |
 | `npm run format:check` | Checks code formatting without modifying files        |
@@ -57,8 +59,8 @@ Vite will display the local development URL in the terminal.
 
 The project uses Husky to automate code quality checks:
 
-- **pre-commit:** runs `lint-staged` to lint and format staged JavaScript and TypeScript files.
-- **pre-push:** runs the Jest test suite before pushing changes.
+- **pre-commit:** runs `lint-staged`, which applies ESLint and Prettier to staged JavaScript and TypeScript files.
+- **pre-push:** runs `npm test` to execute the Vitest test suite before pushing changes.
 
 ## Project Goals
 
@@ -72,6 +74,18 @@ The main goals of this project are:
 
 ## Project Structure
 
-The application is built with Vite and TypeScript. Source code and application assets are located in the `src` directory.
+The application is built with Vite and TypeScript. The source code is located in the `src` directory:
 
-More detailed documentation about the architecture, design decisions, game logic, and algorithm complexity will be added as the project develops.
+```text
+src/
+├── components/  # UI components
+├── constants/   # Shared constants
+├── controllers/ # Application and user-action controllers
+├── game/        # Core game logic and algorithms
+├── helpers/     # Shared helper functions
+├── pages/       # Page composition
+├── storage/     # Game state and data storage
+├── test/        # Automated tests
+├── index.ts     # Application entry point
+└── style.css    # Global styles
+```

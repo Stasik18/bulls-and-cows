@@ -12,6 +12,57 @@ interface GamePanelProps {
   onGuess: (guess: string) => boolean;
 }
 
+interface GuessInputHandlerProps {
+  input: HTMLInputElement;
+  checkAnswer: HTMLButtonElement;
+  length: number;
+  base: Base;
+  history: GuessHistoryEntry[];
+  status: GameState['status'];
+  systemName: string;
+  isDigitAllowed: (char: string) => boolean;
+}
+
+function handleGuessInput({
+  input,
+  checkAnswer,
+  length,
+  base,
+  history,
+  status,
+  systemName,
+  isDigitAllowed,
+}: GuessInputHandlerProps): void {
+  const rawValue = input.value.toUpperCase();
+  const characters = rawValue.split('');
+
+  const invalidChar = characters.find((char) => !isDigitAllowed(char));
+  const filteredValue = characters.filter(isDigitAllowed).slice(0, length).join('');
+
+  input.value = filteredValue;
+  input.setCustomValidity('');
+
+  const isDuplicate = history.some(
+    (entry) => entry.guess.toLowerCase() === filteredValue.toLowerCase(),
+  );
+
+  if (invalidChar) {
+    input.setCustomValidity(
+      `Symbol "${invalidChar}" is not available for the numeral system ${systemName}`,
+    );
+    input.reportValidity();
+  } else if (filteredValue.length === length && !isValidGuess(filteredValue, length, base)) {
+    input.setCustomValidity('Enter a valid number with unique digits.');
+    input.reportValidity();
+  } else if (isDuplicate) {
+    input.setCustomValidity('You have already tried this number.');
+    input.reportValidity();
+  }
+
+  checkAnswer.disabled =
+    status === 'won' || !isValidGuess(filteredValue, length, base) || isDuplicate;
+}
+
 export function GamePanel({ length, base, history, status, onGuess }: GamePanelProps) {
   const systemName = SYSTEMS.find((system) => system.value === base)?.label ?? String(base);
   const isDigitAllowed = createDigitValidator(base);
@@ -102,35 +153,16 @@ export function GamePanel({ length, base, history, status, onGuess }: GamePanelP
       'w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-4 text-center text-2xl font-bold tracking-[0.3em] text-slate-800 placeholder:text-base placeholder:font-normal placeholder:tracking-normal placeholder:text-slate-400 focus:border-teal-600 focus:bg-white focus:outline-none disabled:opacity-50',
 
     onInput: (event: Event) => {
-      const input = event.currentTarget as HTMLInputElement;
-      const rawValue = input.value.toUpperCase();
-
-      const invalidChar = rawValue.split('').find((char) => !isDigitAllowed(char));
-
-      const filteredValue = rawValue.split('').filter(isDigitAllowed).slice(0, length).join('');
-
-      input.value = filteredValue;
-      input.setCustomValidity('');
-
-      const isDuplicate = history.some(
-        (entry) => entry.guess.toLowerCase() === filteredValue.toLowerCase(),
-      );
-
-      if (invalidChar) {
-        input.setCustomValidity(
-          `Symbol "${invalidChar}" is not available for the numeral system ${systemName}`,
-        );
-        input.reportValidity();
-      } else if (filteredValue.length === length && !isValidGuess(filteredValue, length, base)) {
-        input.setCustomValidity('Enter a valid number with unique digits.');
-        input.reportValidity();
-      } else if (isDuplicate) {
-        input.setCustomValidity('You have already tried this number.');
-        input.reportValidity();
-      }
-
-      checkAnswer.disabled =
-        status === 'won' || !isValidGuess(filteredValue, length, base) || isDuplicate;
+      handleGuessInput({
+        input: event.currentTarget as HTMLInputElement,
+        checkAnswer,
+        length,
+        base,
+        history,
+        status,
+        systemName,
+        isDigitAllowed,
+      });
     },
   });
 

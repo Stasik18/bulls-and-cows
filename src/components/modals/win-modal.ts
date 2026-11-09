@@ -1,13 +1,6 @@
-import { countPossibleSecrets } from '@/game/countPossibleSecrets';
 import { el } from '@/helpers/fabric-elemnt';
 import { LEADERBOARD_KEY, getGameState, type LeaderboardEntry } from '@/storage/gameState';
-
-function calculateScore(entry: LeaderboardEntry): number {
-  const combinations = countPossibleSecrets(entry.length, entry.base);
-  const timeMinutes = entry.durationMs / 60_000;
-
-  return (100 * Math.log2(combinations)) / (entry.attempts * (1 + timeMinutes / 5));
-}
+import { calculateScore } from '@/helpers/calculate-store';
 
 function formatDuration(durationMs: number): string {
   const totalSeconds = Math.floor(durationMs / 1000);
