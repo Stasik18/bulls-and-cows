@@ -9,35 +9,76 @@ function formatDuration(durationMs: number): string {
 }
 
 export function winModal(attempts: number, durationMs: number, onNewGame: () => void) {
+  const badge = el(
+    'span',
+    {
+      className:
+        'rounded-full bg-teal-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-teal-700',
+    },
+    'Code cracked',
+  );
+
   const title = el(
     'h1',
     {
       id: 'win-title',
-      className: 'text-4xl font-bold text-blue-500 text-center',
+      className: 'text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800 text-center',
     },
     'Congratulations!',
   );
 
-  const attemptsInfo = el(
+  const description = el(
     'p',
-    { className: 'text-lg text-gray-700 text-center' },
-    `Attempts: ${attempts}`,
+    { className: 'text-center text-sm leading-relaxed text-slate-500' },
+    'You found the secret number. Here are your results:',
+  );
+
+  const attemptsInfo = el(
+    'div',
+    {
+      className: 'flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-5 text-center',
+    },
+    el(
+      'span',
+      { className: 'text-xs font-semibold uppercase tracking-wider text-slate-400' },
+      'Attempts',
+    ),
+    el('strong', { className: 'text-3xl font-extrabold text-teal-700' }, attempts),
   );
 
   const timeInfo = el(
-    'p',
-    { className: 'text-lg text-gray-700 text-center' },
-    `Time: ${formatDuration(durationMs)}`,
+    'div',
+    {
+      className: 'flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-5 text-center',
+    },
+    el(
+      'span',
+      { className: 'text-xs font-semibold uppercase tracking-wider text-slate-400' },
+      'Time',
+    ),
+    el(
+      'strong',
+      { className: 'text-3xl font-extrabold text-teal-700' },
+      formatDuration(durationMs),
+    ),
+  );
+
+  const statistics = el(
+    'div',
+    { className: 'grid w-full grid-cols-2 gap-3' },
+    attemptsInfo,
+    timeInfo,
   );
 
   const newGameButton = el(
     'button',
     {
       type: 'button',
-      className: 'rounded-lg bg-blue-500 px-4 py-3 font-semibold text-white hover:bg-blue-600',
+      className:
+        'w-full rounded-xl bg-teal-700 px-5 py-3 font-bold text-white shadow-md shadow-teal-700/20 transition hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-lg focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-teal-500',
       onClick: onNewGame,
     },
-    'New Game',
+    'Start New Game',
   );
 
   const content = el(
@@ -46,10 +87,17 @@ export function winModal(attempts: number, durationMs: number, onNewGame: () => 
       role: 'dialog',
       'aria-modal': 'true',
       'aria-labelledby': 'win-title',
-      className: 'flex w-full max-w-lg flex-col items-center gap-6 rounded-xl bg-white p-8',
+      className:
+        'relative flex w-full max-w-md flex-col items-center gap-6 overflow-hidden rounded-3xl border border-white/70 bg-slate-50 p-6 shadow-2xl sm:p-8',
     },
+    el('div', {
+      className:
+        'absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-teal-500 via-cyan-400 to-blue-500',
+    }),
+    badge,
     title,
-    el('div', { className: 'flex flex-col gap-2' }, attemptsInfo, timeInfo),
+    description,
+    statistics,
     newGameButton,
   );
 
@@ -57,7 +105,7 @@ export function winModal(attempts: number, durationMs: number, onNewGame: () => 
     'div',
     {
       className:
-        'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm',
+        'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-md',
     },
     content,
   );

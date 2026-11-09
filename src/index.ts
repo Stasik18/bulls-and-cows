@@ -2,7 +2,7 @@ import './style.css';
 
 import { HomePage } from './ui/home-page';
 import { GamePage } from './ui/game-page';
-import { modal } from './ui/modal';
+import { leaderModal } from './ui/leader-modal';
 import { winModal } from './ui/win-modal';
 import { el } from './helpers/fabric-elemnt';
 import { getGameState, setGameState, subscribeGameState } from './storage/gameState';
@@ -20,7 +20,7 @@ function renderApp() {
 
   if (modalStatus === 'open') {
     main.append(
-      modal(() => {
+      leaderModal(() => {
         setGameState({ modalStatus: 'close' });
       }),
     );
