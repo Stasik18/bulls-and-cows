@@ -4,9 +4,9 @@ import { HomePage } from './ui/home-page';
 import { GamePage } from './ui/game-page';
 import { modal } from './ui/modal';
 import { getGameState, setGameState, subscribeGameState } from './storage/gameState';
+import { el } from './helpers/fabric-elemnt';
 
-const main = document.createElement('main');
-main.className = 'min-h-screen w-full flex items-center justify-center p-4';
+const main = el('main', { className: 'min-h-screen w-full flex items-center justify-center p-4' });
 
 function renderApp() {
   const { status, modalStatus } = getGameState();
