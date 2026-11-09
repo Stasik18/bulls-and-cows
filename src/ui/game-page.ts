@@ -44,7 +44,7 @@ export function GamePage() {
     id: 'guess-input',
     name: 'guess',
     type: 'text',
-    inputMode: base === 10 ? 'numeric' : 'text',
+    inputMode: base === 16 ? 'text' : 'numeric',
     autocomplete: 'off',
     placeholder: 'Enter your guess',
     maxLength: length,
@@ -52,16 +52,33 @@ export function GamePage() {
     className: 'rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:outline-none',
     onInput: (event: Event) => {
       const input = event.currentTarget as HTMLInputElement;
+      const rawValue = input.value.toUpperCase();
 
-      const filteredValue = input.value
-        .toUpperCase()
-        .split('')
-        .filter(isDigitAllowed)
-        .slice(0, length)
-        .join('');
+      const invalidChar = rawValue.split('').find((char) => !isDigitAllowed(char));
+
+      const filteredValue = rawValue.split('').filter(isDigitAllowed).slice(0, length).join('');
 
       input.value = filteredValue;
+
       input.setCustomValidity('');
+
+      if (invalidChar) {
+        input.setCustomValidity(
+          `Symbol "${invalidChar}" is not available for the numeral system ${systemName}`,
+        );
+        input.reportValidity();
+      }
+      if (filteredValue.length === length) {
+        if (!isValidGuess(filteredValue, length, base)) {
+          guessInput.setCustomValidity('Enter a valid number with unique digits.');
+          guessInput.reportValidity();
+        }
+
+        if (history.some((entry) => entry.guess.toLowerCase() === filteredValue.toLowerCase())) {
+          guessInput.setCustomValidity('You have already tried this number.');
+          guessInput.reportValidity();
+        }
+      }
     },
   });
 
@@ -69,7 +86,7 @@ export function GamePage() {
 
   function handleGuess() {
     const guess = guessInput.value;
-
+    // оставил проверки по отправке для перестраховки
     if (!isValidGuess(guess, length, base)) {
       guessInput.setCustomValidity('Enter a valid number with unique digits.');
       guessInput.reportValidity();
@@ -85,12 +102,12 @@ export function GamePage() {
     const result = evaluateGuess(secret, guess);
 
     const newHistory = [
-      ...history,
       {
         guess,
         bulls: result.bulls,
         cows: result.cows,
       },
+      ...history,
     ];
 
     const isWon = result.bulls === length;
@@ -100,6 +117,10 @@ export function GamePage() {
       status: isWon ? 'won' : 'playing',
       finishTime: isWon ? Date.now() : null,
     });
+
+    if (!isWon) {
+      document.getElementById('guess-input')?.focus();
+    }
   }
 
   const checkAnswer = el(
