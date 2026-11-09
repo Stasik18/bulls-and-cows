@@ -43,4 +43,8 @@ describe('evaluateGuess', () => {
 
     expect(evaluateGuess(secretNumber, attempt)).toEqual({ bulls: 0, cows: 1 });
   });
+
+  it('compares hexadecimal digits regardless of case', () => {
+    expect(evaluateGuess('aB', 'Ab')).toEqual({ bulls: 2, cows: 0 });
+  });
 });
