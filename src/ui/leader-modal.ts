@@ -1,4 +1,14 @@
 import { el } from '../helpers/fabric-elemnt';
+import { SYSTEMS } from '../constants/systems';
+import { LEADERBOARD_KEY, type LeaderboardEntry } from '../storage/gameState';
+import { countPossibleSecrets } from '../game/countPossibleSecrets';
+
+function calculateScore(entry: LeaderboardEntry): number {
+  const combinations = countPossibleSecrets(entry.length, entry.base);
+  const timeMinutes = entry.durationMs / 60_000;
+
+  return (100 * Math.log2(combinations)) / (entry.attempts * (1 + timeMinutes / 5));
+}
 
 export function leaderModal(onClose: () => void) {
   let isClosed = false;
@@ -40,10 +50,75 @@ export function leaderModal(onClose: () => void) {
     'The best results of your games',
   );
 
-  const leaderList = el('ul', {
-    className:
-      'flex min-h-80 w-full flex-col divide-y divide-slate-200 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4',
+  const leaderboard: LeaderboardEntry[] = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) ?? '[]');
+
+  const topResults = [...leaderboard]
+    .sort((a, b) => calculateScore(b) - calculateScore(a))
+    .slice(0, 10);
+
+  const rows = topResults.map((entry, index) => {
+    const systemName =
+      SYSTEMS.find((system) => system.value === entry.base)?.label ?? String(entry.base);
+
+    const totalSeconds = Math.floor(entry.durationMs / 1000);
+    const time = `${Math.floor(totalSeconds / 60)}m ${totalSeconds % 60}s`;
+
+    return el(
+      'tr',
+      { className: 'transition hover:bg-teal-50/50' },
+      el('td', { className: 'border-b border-slate-100 p-3 font-bold text-teal-700' }, index + 1),
+      el(
+        'td',
+        { className: 'border-b border-slate-100 p-3 font-semibold text-slate-800' },
+        entry.attempts,
+      ),
+      el('td', { className: 'border-b border-slate-100 p-3 text-slate-600' }, time),
+      el('td', { className: 'border-b border-slate-100 p-3 text-slate-600' }, systemName),
+      el('td', { className: 'border-b border-slate-100 p-3 text-slate-600' }, entry.length),
+      el('td', {}, calculateScore(entry).toFixed(1)),
+    );
   });
+
+  if (rows.length === 0) {
+    rows.push(
+      el(
+        'tr',
+        {},
+        el(
+          'td',
+          { colSpan: 5, className: 'p-10 text-center text-slate-400' },
+          'No results yet. Complete your first game!',
+        ),
+      ),
+    );
+  }
+
+  const leaderboardTable = el(
+    'table',
+    { className: 'w-full min-w-[500px] text-center' },
+    el(
+      'thead',
+      { className: 'bg-slate-100' },
+      el(
+        'tr',
+        {},
+        ...['Place', 'Attempts', 'Time', 'System', 'Length', 'Score'].map((title) =>
+          el(
+            'th',
+            { className: 'border-b border-slate-200 p-3 text-xs font-bold text-slate-500' },
+            title,
+          ),
+        ),
+      ),
+    ),
+    el('tbody', {}, ...rows),
+  );
+
+  const tableContainer = el(
+    'div',
+    { className: 'w-full overflow-x-auto rounded-2xl border border-slate-200 bg-white' },
+    leaderboardTable,
+  );
 
   const closeButton = el(
     'button',
@@ -72,7 +147,7 @@ export function leaderModal(onClose: () => void) {
     }),
     badge,
     el('div', { className: 'flex flex-col gap-2' }, title, description),
-    leaderList,
+    tableContainer,
     closeButton,
   );
 

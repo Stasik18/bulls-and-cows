@@ -4,9 +4,10 @@ import { evaluateGuess } from '../game/evaluateGuess';
 import { isValidGuess } from '../game/isValidGuess';
 import { el } from '../helpers/fabric-elemnt';
 import { getGameState, setGameState } from '../storage/gameState';
+import { LEADERBOARD_KEY, type LeaderboardEntry } from '../storage/gameState';
 
 export function GamePage() {
-  const { secret, length, base, history, status } = getGameState();
+  const { secret, length, base, history, status, startTime } = getGameState();
 
   if (!secret) {
     return el('div', {}, 'Game has not started');
@@ -168,11 +169,28 @@ export function GamePage() {
     ];
 
     const isWon = result.bulls === length;
+    const finishTime = isWon ? Date.now() : null;
+
+    if (isWon && startTime !== null && finishTime !== null) {
+      const leaderboard: LeaderboardEntry[] = JSON.parse(
+        localStorage.getItem(LEADERBOARD_KEY) ?? '[]',
+      );
+
+      leaderboard.push({
+        attempts: newHistory.length,
+        durationMs: finishTime - startTime,
+        base,
+        length,
+        completedAt: finishTime,
+      });
+
+      localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard));
+    }
 
     setGameState({
       history: newHistory,
       status: isWon ? 'won' : 'playing',
-      finishTime: isWon ? Date.now() : null,
+      finishTime,
     });
 
     if (!isWon) {

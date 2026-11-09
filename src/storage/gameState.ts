@@ -6,6 +6,16 @@ export interface GuessHistoryEntry {
   cows: number;
 }
 
+export interface LeaderboardEntry {
+  attempts: number;
+  durationMs: number;
+  base: Base;
+  length: number;
+  completedAt: number;
+}
+
+export const LEADERBOARD_KEY = 'bulls-and-cows-leaderboard';
+
 export interface GameState {
   secret: string | null;
   length: number;

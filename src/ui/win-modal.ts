@@ -1,4 +1,5 @@
 import { el } from '../helpers/fabric-elemnt';
+import { LEADERBOARD_KEY, type LeaderboardEntry } from '../storage/gameState';
 
 function formatDuration(durationMs: number): string {
   const totalSeconds = Math.floor(durationMs / 1000);
@@ -9,6 +10,27 @@ function formatDuration(durationMs: number): string {
 }
 
 export function winModal(attempts: number, durationMs: number, onNewGame: () => void) {
+  const leaderboard: LeaderboardEntry[] = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) ?? '[]');
+
+  const place =
+    leaderboard.filter(
+      (entry) =>
+        entry.attempts < attempts || (entry.attempts === attempts && entry.durationMs < durationMs),
+    ).length + 1;
+
+  const placeInfo = el(
+    'div',
+    {
+      className:
+        'flex flex-col gap-2 rounded-2xl border border-teal-200 bg-teal-50 p-5 text-center',
+    },
+    el(
+      'span',
+      { className: 'text-xs font-semibold uppercase tracking-wider text-teal-700' },
+      'Your place',
+    ),
+    el('strong', { className: 'text-3xl font-extrabold text-teal-700' }, `#${place}`),
+  );
   const badge = el(
     'span',
     {
@@ -65,7 +87,8 @@ export function winModal(attempts: number, durationMs: number, onNewGame: () => 
 
   const statistics = el(
     'div',
-    { className: 'grid w-full grid-cols-2 gap-3' },
+    { className: 'grid w-full grid-cols-1 gap-3 sm:grid-cols-3' },
+    placeInfo,
     attemptsInfo,
     timeInfo,
   );
