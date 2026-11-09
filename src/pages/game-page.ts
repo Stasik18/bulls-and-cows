@@ -1,6 +1,6 @@
 import { GamePanel } from '@/components/game/game-panel';
 import { HistorySection } from '@/components/game/history-section';
-import { handleGuess } from '@/controllers/ game-controller';
+import { handleGuess } from '@/controllers/game-controller';
 import { el } from '@/helpers/fabric-elemnt';
 import { getGameState } from '@/storage/gameState';
 

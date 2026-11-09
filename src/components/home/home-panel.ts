@@ -1,12 +1,25 @@
 import { SYSTEMS } from '@/constants/systems';
 import { countPossibleSecrets } from '@/game/countPossibleSecrets';
-import { generateSecret } from '@/game/generateSecret';
 import { el } from '@/helpers/fabric-elemnt';
-import { getGameState, setGameState } from '@/storage/gameState';
+import type { Base } from '@/storage/gameState';
 
-export function HomePage() {
-  const { base, length } = getGameState();
+interface HomePanelProps {
+  base: Base;
+  length: number;
+  onChangeLength: (length: number) => void;
+  onChangeSystem: (base: Base) => void;
+  onStartGame: () => void;
+  onOpenLeaderboard: () => void;
+}
 
+export function HomePanel({
+  base,
+  length,
+  onChangeLength,
+  onChangeSystem,
+  onStartGame,
+  onOpenLeaderboard,
+}: HomePanelProps) {
   const selectedSystem = SYSTEMS.find((system) => system.value === base) ?? SYSTEMS[0];
 
   const titleHomePage = el(
@@ -117,7 +130,7 @@ export function HomePage() {
         checked: digit === selectedLength,
         className: 'sr-only peer',
         onChange: () => {
-          setGameState({ length: digit });
+          onChangeLength(digit);
         },
       });
 
@@ -159,10 +172,7 @@ export function HomePage() {
       checked: system.value === base,
       className: 'accent-teal-700',
       onChange: () => {
-        setGameState({
-          base: system.value,
-          length: 2,
-        });
+        onChangeSystem(system.value);
       },
     });
 
@@ -215,17 +225,7 @@ export function HomePage() {
       type: 'button',
       className:
         'w-full rounded-xl bg-teal-700 px-5 py-4 font-bold text-white shadow-md shadow-teal-700/20 transition hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-lg',
-      onClick: () => {
-        const { length, base } = getGameState();
-
-        setGameState({
-          status: 'playing',
-          secret: generateSecret(length, base),
-          startTime: Date.now(),
-          finishTime: null,
-          history: [],
-        });
-      },
+      onClick: onStartGame,
     },
     'Start Game',
   );
@@ -236,9 +236,7 @@ export function HomePage() {
       type: 'button',
       className:
         'w-full rounded-xl border border-slate-300 bg-white px-5 py-4 font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-teal-600 hover:bg-teal-50 hover:text-teal-800',
-      onClick: () => {
-        setGameState({ modalStatus: 'open' });
-      },
+      onClick: onOpenLeaderboard,
     },
     'Leaderboard',
   );

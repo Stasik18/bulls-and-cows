@@ -1,6 +1,6 @@
 import './style.css';
 
-import { HomePage } from './ui/home-page';
+import { HomePage } from '@/pages/home-page';
 import { GamePage } from '@/pages/game-page';
 
 import { el } from './helpers/fabric-elemnt';
