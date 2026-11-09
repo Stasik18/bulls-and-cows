@@ -1,4 +1,5 @@
 import { SYSTEMS } from '../constants/systems';
+import { countPossibleSecrets } from '../game/countPossibleSecrets';
 import { generateSecret } from '../game/generateSecret';
 import { el } from '../helpers/fabric-elemnt';
 import { getGameState, setGameState } from '../storage/gameState';
@@ -78,6 +79,17 @@ export function HomePage() {
     { className: 'rounded-lg bg-gray-100 p-4' },
     el('p', { className: 'mb-2 font-semibold text-gray-700' }, 'Available digits:'),
     digitsList,
+  );
+
+  const countVariantsDisplay = el(
+    'div',
+    { className: 'rounded-lg bg-gray-100 p-4' },
+    el('span', { className: 'mb-2 font-semibold text-gray-700' }, 'Count Variants: '),
+    el(
+      'span',
+      { className: 'mb-2 font-semibold text-gray-700' },
+      `${countPossibleSecrets(length, base)}`,
+    ),
   );
 
   function renderCurrentSymbol(digits: string, selectedLength: number) {
@@ -164,6 +176,7 @@ export function HomePage() {
     SYSTEMSContainer,
     currentSymbol,
     digitsDisplay,
+    countVariantsDisplay,
     startGameButton,
     leaderBoardButton,
   );
