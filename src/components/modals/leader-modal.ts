@@ -1,7 +1,7 @@
-import { el } from '../helpers/fabric-elemnt';
-import { SYSTEMS } from '../constants/systems';
-import { LEADERBOARD_KEY, type LeaderboardEntry } from '../storage/gameState';
-import { countPossibleSecrets } from '../game/countPossibleSecrets';
+import { el } from '@/helpers/fabric-elemnt';
+import { SYSTEMS } from '@/constants/systems';
+import { LEADERBOARD_KEY, type LeaderboardEntry } from '@/storage/gameState';
+import { countPossibleSecrets } from '@/game/countPossibleSecrets';
 
 function calculateScore(entry: LeaderboardEntry): number {
   const combinations = countPossibleSecrets(entry.length, entry.base);

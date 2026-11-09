@@ -1,7 +1,7 @@
 import './style.css';
 
 import { HomePage } from './ui/home-page';
-import { GamePage } from './ui/game-page';
+import { GamePage } from '@/pages/game-page';
 
 import { el } from './helpers/fabric-elemnt';
 import { getGameState, setGameState, subscribeGameState } from './storage/gameState';
