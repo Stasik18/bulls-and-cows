@@ -1,12 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { generateSecret } from '../game/generateSecret';
-
-const systems = [
-  { value: 2, digits: '0 1' },
-  { value: 8, digits: '0 1 2 3 4 5 6 7' },
-  { value: 10, digits: '0 1 2 3 4 5 6 7 8 9' },
-  { value: 16, digits: '0 1 2 3 4 5 6 7 8 9 A B C D E F' },
-];
+import { SYSTEMS } from '../constants/systems';
 
 describe('generate', () => {
   it('generateSecret is function', () => {
@@ -44,7 +38,7 @@ describe('generate', () => {
 
     const secretNumber = generateSecret(length, base, mockFn).split('');
 
-    const digits = systems.find((system) => system.value === 16)?.digits.split(' ') ?? [];
+    const digits = SYSTEMS.find((system) => system.value === 16)?.digits.split(' ') ?? [];
 
     expect(secretNumber.every((digit) => digits.includes(digit))).toBe(true);
   });
