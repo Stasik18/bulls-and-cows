@@ -3,13 +3,16 @@ import './style.css';
 import { HomePage } from './ui/home-page';
 import { GamePage } from './ui/game-page';
 import { modal } from './ui/modal';
-import { getGameState, setGameState, subscribeGameState } from './storage/gameState';
+import { winModal } from './ui/win-modal';
 import { el } from './helpers/fabric-elemnt';
+import { getGameState, setGameState, subscribeGameState } from './storage/gameState';
 
-const main = el('main', { className: 'min-h-screen w-full flex items-center justify-center p-4' });
+const main = el('main', {
+  className: 'min-h-screen w-full flex items-center justify-center p-4',
+});
 
 function renderApp() {
-  const { status, modalStatus } = getGameState();
+  const { status, modalStatus, history, startTime, finishTime } = getGameState();
 
   const page = status === 'idle' ? HomePage() : GamePage();
 
@@ -19,6 +22,23 @@ function renderApp() {
     main.append(
       modal(() => {
         setGameState({ modalStatus: 'close' });
+      }),
+    );
+  }
+
+  if (status === 'won') {
+    const duration = startTime !== null && finishTime !== null ? finishTime - startTime : 0;
+
+    main.append(
+      winModal(history.length, duration, () => {
+        setGameState({
+          status: 'idle',
+          secret: null,
+          history: [],
+          startTime: null,
+          finishTime: null,
+          modalStatus: 'close',
+        });
       }),
     );
   }
