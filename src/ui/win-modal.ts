@@ -1,5 +1,13 @@
 import { el } from '../helpers/fabric-elemnt';
-import { LEADERBOARD_KEY, type LeaderboardEntry } from '../storage/gameState';
+import { LEADERBOARD_KEY, getGameState, type LeaderboardEntry } from '../storage/gameState';
+import { countPossibleSecrets } from '../game/countPossibleSecrets';
+
+function calculateScore(entry: LeaderboardEntry): number {
+  const combinations = countPossibleSecrets(entry.length, entry.base);
+  const timeMinutes = entry.durationMs / 60_000;
+
+  return (100 * Math.log2(combinations)) / (entry.attempts * (1 + timeMinutes / 5));
+}
 
 function formatDuration(durationMs: number): string {
   const totalSeconds = Math.floor(durationMs / 1000);
@@ -10,13 +18,22 @@ function formatDuration(durationMs: number): string {
 }
 
 export function winModal(attempts: number, durationMs: number, onNewGame: () => void) {
+  const { base, length, finishTime } = getGameState();
+
   const leaderboard: LeaderboardEntry[] = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) ?? '[]');
 
-  const place =
-    leaderboard.filter(
-      (entry) =>
-        entry.attempts < attempts || (entry.attempts === attempts && entry.durationMs < durationMs),
-    ).length + 1;
+  const sortedLeaderboard = [...leaderboard].sort((a, b) => calculateScore(b) - calculateScore(a));
+
+  const placeIndex = sortedLeaderboard.findIndex(
+    (entry) =>
+      entry.attempts === attempts &&
+      entry.durationMs === durationMs &&
+      entry.base === base &&
+      entry.length === length &&
+      entry.completedAt === finishTime,
+  );
+
+  const place = placeIndex === -1 ? 'Not ranked' : `${placeIndex + 1}`;
 
   const placeInfo = el(
     'div',
@@ -111,7 +128,7 @@ export function winModal(attempts: number, durationMs: number, onNewGame: () => 
       'aria-modal': 'true',
       'aria-labelledby': 'win-title',
       className:
-        'relative flex w-full max-w-md flex-col items-center gap-6 overflow-hidden rounded-3xl border border-white/70 bg-slate-50 p-6 shadow-2xl sm:p-8',
+        'relative flex w-full max-w-lg flex-col items-center gap-6 overflow-hidden rounded-3xl border border-white/70 bg-slate-50 p-6 shadow-2xl sm:p-8',
     },
     el('div', {
       className:
