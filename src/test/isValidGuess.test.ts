@@ -49,4 +49,8 @@ describe('isValidGuess', () => {
 
     expect(isValidGuess(guess, length, base)).toBeTruthy();
   });
+
+  it('treats uppercase and lowercase hexadecimal digits as duplicates', () => {
+    expect(isValidGuess('Aa', 2, 16)).toBeFalsy();
+  });
 });
