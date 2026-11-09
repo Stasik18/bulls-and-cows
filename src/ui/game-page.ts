@@ -311,7 +311,7 @@ export function GamePage() {
   );
 
   return el(
-    'form',
+    'div',
     { className: 'flex w-full max-w-4xl flex-col gap-6 mx-auto p-8' },
     pageHeader,
     gameInfo,
