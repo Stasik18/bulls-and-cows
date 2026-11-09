@@ -1,7 +1,7 @@
 export function evaluateGuess(secret: string, guess: string): { bulls: number; cows: number } {
   const answers = secret.split('').map((item, index) => {
-    if (guess.split('')[index] === item) return 'bull';
-    if (guess.split('').includes(item)) return 'cow';
+    if (guess.split('')[index].toLowerCase() === item.toLowerCase()) return 'bull';
+    if (guess.split('').includes(item.toLowerCase())) return 'cow';
     return null;
   });
 
